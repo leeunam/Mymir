@@ -1,0 +1,24 @@
+# Ambiente de Variáveis (Super Importante)
+.env
+.env.*
+
+# Python (Ambiente Virtual e Cache)
+backend/venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Node.js / Frontend
+node_modules/
+dist/
+build/
+.next/
+
+# IDEs (Configurações de Editor)
+.vscode/
+.idea/
+*.swp
+
+# Sistema Operacional
+.DS_Store
+Thumbs.db
