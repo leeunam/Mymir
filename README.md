@@ -177,14 +177,16 @@ The frontend will be available at: **http://localhost:5173**
 ### Step 5 — Configure n8n
 
 1. Access n8n at **http://localhost:5678** (credentials: `admin` / `admin123`)
-2. Import your workflow JSON (if you have one exported)
+2. Import the Mymir workflow:
+   - Click **"Add workflow"** → **"Import from file"**
+   - Select the file [`assets/mymir.json`](./assets/mymir.json)
 3. Configure credentials for:
    - **Redis** — host: `localhost`, port: `6379`, password: `redis_secret`
    - **Google Gemini API** — add your API key
    - **Groq API** — add your API key
    - **Tavily / MediaStack / GNews** — add your API keys
 4. In the **Webhook** trigger node, set **Respond** to `Using Respond to Webhook Node`
-5. Click **Execute Workflow** on the canvas before making the first request
+5. **Activate the workflow** using the toggle (top-right corner of the canvas)
 
 > **Development tip:** Use `webhook-test` URL in `.env` for development. Switch to `webhook` (without `-test`) and activate the workflow toggle for production.
 
@@ -435,14 +437,16 @@ O frontend estará disponível em: **http://localhost:5173**
 ### Passo 5 — Configure o n8n
 
 1. Acesse o n8n em **http://localhost:5678** (credenciais: `admin` / `admin123`)
-2. Importe o JSON do seu workflow (se tiver um exportado)
+2. Importe o fluxo do Mymir:
+   - Clique em **"Add workflow"** → **"Import from file"**
+   - Selecione o arquivo [`assets/mymir.json`](./assets/mymir.json)
 3. Configure as credenciais para:
    - **Redis** — host: `localhost`, porta: `6379`, senha: `redis_secret`
    - **Google Gemini API** — adicione sua chave de API
    - **Groq API** — adicione sua chave de API
    - **Tavily / MediaStack / GNews** — adicione suas chaves de API
 4. No nó de trigger **Webhook**, defina **Respond** como `Using Respond to Webhook Node`
-5. Clique em **Execute Workflow** no canvas antes de fazer a primeira requisição
+5. **Ative o workflow** usando o toggle (canto superior direito do canvas)
 
 > **Dica de desenvolvimento:** Use a URL `webhook-test` no `.env` para desenvolvimento. Troque para `webhook` (sem o `-test`) e ative o toggle do workflow para produção.
 
