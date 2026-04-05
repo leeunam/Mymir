@@ -1,0 +1,1993 @@
+{
+  "name": "mymir",
+  "nodes": [
+    {
+      "parameters": {
+        "query": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Query', ``, 'string') }}",
+        "options": {
+          "search_depth": "basic",
+          "max_results": 5,
+          "days": 7,
+          "include_domains": [
+            "theverge.com",
+            "techcrunch.com",
+            "technologyreview.com",
+            "huggingface.co",
+            "arxiv.org",
+            "tecmundo.com.br",
+            "olhardigital.com.br",
+            "startups.com.br",
+            "infomoney.com.br",
+            "mit.edu/news"
+          ]
+        }
+      },
+      "type": "@tavily/n8n-nodes-tavily.tavilyTool",
+      "typeVersion": 1,
+      "position": [
+        672,
+        1616
+      ],
+      "id": "25ae7ddf-086b-4b2b-a57d-4ea05825ad5e",
+      "name": "Search in Tavily",
+      "credentials": {
+        "tavilyApi": {
+          "id": "YSI6NEpwJrHWCddr",
+          "name": "Tavily account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "Busca notícias recentes de IA em fontes jornalísticas. Parâmetro: keywords (palavras-chave para buscar)",
+        "url": "=http://api.mediastack.com/v1/news",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "access_key",
+              "value": "44b3d7324485f751ed13f87e706d1940"
+            },
+            {
+              "name": "keywords",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('parameters1_Value', `The topic or keywords to search for news.`, 'string') }}"
+            },
+            {
+              "name": "languages",
+              "value": "en,pt"
+            },
+            {
+              "name": "sort",
+              "value": "published_desc"
+            },
+            {
+              "name": "limit",
+              "value": "20"
+            },
+            {
+              "name": "date",
+              "value": "={{ new Date(Date.now()-7*86400000).toISOString().split('T')[0] }},{{ new Date().toISOString().split('T')[0] }}"
+            },
+            {
+              "name": "categories",
+              "value": "technology"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        800,
+        1616
+      ],
+      "id": "8e926312-7f4e-4b01-9892-6c9b30aec02c",
+      "name": "mediastack_news"
+    },
+    {
+      "parameters": {
+        "toolDescription": "Busca notícias recentes em fontes de tecnologia e IA. Parâmetro: query (termo de busca)\n",
+        "url": "=https://gnews.io/api/v4/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('parameters0_Value', ``, 'string') }}"
+            },
+            {
+              "name": "lang",
+              "value": "en"
+            },
+            {
+              "name": "max",
+              "value": "10"
+            },
+            {
+              "name": "apikey",
+              "value": "6bd3b3e1235a4405e0a506a6c0d9627b"
+            },
+            {
+              "name": "from",
+              "value": "={{ new Date(Date.now()-7*86400000).toISOString() }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        928,
+        1616
+      ],
+      "id": "7b354807-60d7-4ad6-a1fb-93e68b379ad5",
+      "name": "gnews_search"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('webhook - WEB').first().json.body.session_id }}",
+        "sessionTTL": 86400
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryRedisChat",
+      "typeVersion": 1.5,
+      "position": [
+        1936,
+        1184
+      ],
+      "id": "5c9b0dbc-4303-4c22-ae02-617b38792187",
+      "name": "Redis Chat Memory",
+      "credentials": {
+        "redis": {
+          "id": "QCnqTnVvhe5uYeSU",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Consulta no Redis se já existe uma resposta pronta para aquele usuário/path.",
+        "height": 256,
+        "width": 176
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        272,
+        880
+      ],
+      "typeVersion": 1,
+      "id": "d723d0c8-8596-4e75-b4b2-80b4d241c5a8",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "Tools de pesquisa para IA entender o mercado e trazer a resposta",
+        "height": 240,
+        "width": 384
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        656,
+        1520
+      ],
+      "typeVersion": 1,
+      "id": "a67fdfe6-79a5-42e8-a384-9157d9f1cd50",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "a24b3885-4dc9-4bdc-a1e2-9020e760bac3",
+              "leftValue": "={{ $('Validate Input').item.json.is_followup.toString() === 'true' }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": "={{ false }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        688,
+        1040
+      ],
+      "id": "31a22143-7b72-4477-9dbe-504a59a24ea4",
+      "name": "if - follow up or not"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        -352,
+        1632
+      ],
+      "id": "85cc38e2-03f0-4098-b8d2-4234f6a4074d",
+      "name": "Error Trigger",
+      "alwaysOutputData": true,
+      "executeOnce": false,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "chat",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -368,
+        1104
+      ],
+      "id": "198abd06-e2f4-4b6e-a188-2b89df0f2f51",
+      "name": "webhook - WEB",
+      "webhookId": "bd87c90d-eefb-4392-aead-07c1b88aeebb"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Validate Input').first().json.path }}",
+        "options": {
+          "systemMessage": "Você é um agente de coleta de dados sobre inteligência artificial.\n\nSua função é buscar dados recentes e estruturados usando as tools disponíveis.\n\nRegras obrigatórias:\n- SEMPRE use pelo menos 2 tools\n- Use no máximo uma vez cada uma  das 3 tools\n- Retorne no máximo 8 resultados no total\n- Considere apenas conteúdos dos últimos 7 dias\n- NÃO filtre agressivamente — aceite datas aproximadas\n- Ignore itens sem link\n- NÃO escreva explicações\n- NÃO escreva texto fora do JSON\n\nO path é recebido por:\n={{ $('Normalize Input').item.json.path }}\n\nLógica por path:\n\nSe path = \"news\":\n- Tavily query: \"artificial intelligence news this week\"\n- GNews query: \"artificial intelligence\"\n- Mediastack query: \"artificial intelligence news this week\"\n\nSe path = \"trends\":\n- Tavily query: \"AI trends this week\"\n- GNews query: \"AI trends\"\n- Mediastack query: \"AI trends\"\n\nSe path = \"projects\":\n- Tavily query: \"AI tools launched this week\"\n- GNews query: \"AI startup launch\"\n- Mediastack query: \"Ai projects\"\n\nFormato de saída:\n{\n  \"path\": \"<path>\",\n  \"results\": [\n    {\n      \"title\": \"...\",\n      \"source\": \"...\",\n      \"date\": \"...\",\n      \"url\": \"...\",\n      \"snippet\": \"...\"\n    }\n  ]\n}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        704,
+        1328
+      ],
+      "id": "46c8dcbb-cdb7-4944-866b-fef5a816c000",
+      "name": "Agent Search"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=={{\n`MODO: ${$json.editor_mode}\nPATH: ${$json.editor_path}\n\nPERGUNTA DO USUÁRIO:\n${$json.editor_user_message}\n\n${$json.editor_mode === 'search' ? `\nDADOS DE PESQUISA:\n${JSON.stringify($json.editor_results)}\n` : `\nCONTEXTO DA CONVERSA:\nÚltima resposta:\n${$json.editor_last_response}\n\nÚltimos dados de pesquisa:\n${JSON.stringify($json.editor_last_results)}\n`}\n\nTAREFA:\nGere uma resposta editorial clara e útil.\n`}}",
+        "options": {
+          "systemMessage": "Você é o Mymit, um editor editorial especializado em inteligência artificial.\n\nSua função é transformar dados estruturados em uma resposta clara, concisa e confiável em português do Brasil.\n\nRegras:\n- Nunca invente dados\n- Use apenas as informações fornecidas\n- Elimine duplicações\n- Seja direto e editorial\n- Inclua links quando disponíveis\n- Se não houver dados suficientes, diga explicitamente"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1824,
+        960
+      ],
+      "id": "9b373b43-f717-45d2-aaa4-6fd54d392451",
+      "name": "Editorial Editor"
+    },
+    {
+      "parameters": {
+        "query": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Query', ``, 'string') }}",
+        "options": {
+          "search_depth": "advanced",
+          "max_results": 10,
+          "days": 7,
+          "include_domains": [
+            "theverge.com",
+            "techcrunch.com",
+            "technologyreview.com",
+            "huggingface.co",
+            "arxiv.org",
+            "tecmundo.com.br",
+            "olhardigital.com.br",
+            "startups.com.br",
+            "infomoney.com.br",
+            "mit.edu/news"
+          ]
+        }
+      },
+      "type": "@tavily/n8n-nodes-tavily.tavilyTool",
+      "typeVersion": 1,
+      "position": [
+        -16,
+        2384
+      ],
+      "id": "647253d6-4881-4665-a9a4-4568ae6fee48",
+      "name": "Search in Tavily1",
+      "credentials": {
+        "tavilyApi": {
+          "id": "YSI6NEpwJrHWCddr",
+          "name": "Tavily account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "Busca notícias recentes de IA em fontes jornalísticas. Parâmetro: keywords (palavras-chave para buscar)",
+        "url": "=http://api.mediastack.com/v1/news",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "access_key",
+              "value": "44b3d7324485f751ed13f87e706d1940"
+            },
+            {
+              "name": "keywords",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('parameters1_Value', `The topic or keywords to search for news.`, 'string') }}"
+            },
+            {
+              "name": "languages",
+              "value": "en,pt"
+            },
+            {
+              "name": "sort",
+              "value": "published_desc"
+            },
+            {
+              "name": "limit",
+              "value": "20"
+            },
+            {
+              "name": "date",
+              "value": "={{ new Date(Date.now()-7*86400000).toISOString().split('T')[0] }},{{ new Date().toISOString().split('T')[0] }}"
+            },
+            {
+              "name": "categories",
+              "value": "technology"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        112,
+        2384
+      ],
+      "id": "24bf3eb1-0555-470c-aeeb-48bd41aa01b9",
+      "name": "mediastack_news1"
+    },
+    {
+      "parameters": {
+        "toolDescription": "Busca notícias recentes em fontes de tecnologia e IA. Parâmetro: query (termo de busca)\n",
+        "url": "=https://gnews.io/api/v4/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('parameters0_Value', ``, 'string') }}"
+            },
+            {
+              "name": "lang",
+              "value": "en"
+            },
+            {
+              "name": "max",
+              "value": "10"
+            },
+            {
+              "name": "apikey",
+              "value": "6bd3b3e1235a4405e0a506a6c0d9627b"
+            },
+            {
+              "name": "from",
+              "value": "={{ new Date(Date.now()-7*86400000).toISOString() }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        240,
+        2384
+      ],
+      "id": "afb1c3c7-6932-43d7-99b7-8b702fc7d467",
+      "name": "gnews_search1"
+    },
+    {
+      "parameters": {
+        "content": "Tools de pesquisa para IA entender o mercado e trazer a resposta",
+        "height": 240,
+        "width": 384
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -48,
+        2288
+      ],
+      "typeVersion": 1,
+      "id": "02def410-d80e-47df-9fe0-056e636b13e3",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -144,
+        2384
+      ],
+      "id": "428734c9-6fc2-446b-aee9-94564fbc6ce8",
+      "name": "Groq Chat Model1",
+      "credentials": {
+        "groqApi": {
+          "id": "jymHyAi8mmreHFoE",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Busque todos os conteúdos de IA da semana para a newsletter.",
+        "options": {
+          "systemMessage": "Você é um agente de pesquisa especializado em inteligência artificial.\n\nObjetivo:\nColetar conteúdos recentes e relevantes da última semana para uma newsletter semanal de IA.\n\nInstruções gerais:\n- Considere apenas conteúdos publicados nos últimos 7 dias\n- Use somente as tools disponíveis: Tavily, GNews e MediaStack\n- Faça no máximo 1 chamada por consulta/ferramenta\n- Limite a no máximo 3 resultados por consulta/ferramenta\n- Retorne no máximo 12 itens no total\n- Remova duplicados sempre que possível\n- Ignore conteúdos sem data clara, sem fonte identificável ou sem link\n- Não escreva análise editorial\n- Não explique sua lógica\n- Não retorne texto fora do JSON final\n- Retorne apenas dados estruturados e concisos\n\nConsultas:\n1. Tavily\n- \"artificial intelligence news this week 2026\"\n- \"AI projects tools launched this week 2026\"\n\n2. GNews\n- \"artificial intelligence\"\n- \"AI trends 2026\"\n\n3. MediaStack\n- \"artificial intelligence, machine learning, generative AI\"\n\nCritérios de classificação:\n- news: notícias e anúncios relevantes da semana\n- trends: movimentos, padrões e temas recorrentes observados em múltiplas fontes\n- projects: ferramentas, launches, repositórios, produtos ou iniciativas recentes\n\nFormato obrigatório de saída:\n{\n  \"news\": [\n    {\n      \"title\": \"...\",\n      \"source\": \"...\",\n      \"date\": \"...\",\n      \"url\": \"...\",\n      \"snippet\": \"...\"\n    }\n  ],\n  \"trends\": [\n    {\n      \"title\": \"...\",\n      \"source\": \"...\",\n      \"date\": \"...\",\n      \"url\": \"...\",\n      \"snippet\": \"...\"\n    }\n  ],\n  \"projects\": [\n    {\n      \"title\": \"...\",\n      \"source\": \"...\",\n      \"date\": \"...\",\n      \"url\": \"...\",\n      \"snippet\": \"...\"\n    }\n  ]\n}\n\nRegras finais:\n- Se uma categoria não tiver resultados válidos, retorne array vazio\n- Não use markdown\n- Não use blocos de código\n- Não inclua comentários\n- Não inclua campos extras"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -32,
+        2160
+      ],
+      "id": "4c5d8799-cedc-4459-8b97-28a7a82715f8",
+      "name": "Agent Search1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Gere a newsletter semanal com os dados coletados.",
+        "options": {
+          "systemMessage": "Você é um editor especializado em inteligência artificial. Sua função é criar uma newsletter semanal profissional em HTML a partir dos dados brutos coletados.\n\nDADOS COLETADOS ESTA SEMANA:\n={{ $json.output }}\n\nINSTRUÇÕES:\n- Organize o conteúdo em 3 seções: Notícias Principais, Tendências e Projetos em Destaque\n- Selecione os 5 itens mais relevantes de cada seção\n- Para cada item: título como link clicável, resumo de 2-3 frases, fonte\n- Retorne APENAS o HTML completo, sem markdown, sem blocos de código\n\nDESIGN OBRIGATÓRIO:\n- DOCTYPE html completo com meta charset e viewport\n- Fundo geral: #0a0a0f\n- Container centralizado max-width 600px fundo #0f0f1a\n- Header: fundo #7c3aed, \"PULSE AI\" branco 28px bold, subtítulo \"Sua dose semanal de inteligência artificial\" em #e9d5ff, data em #c4b5fd\n- Título de cada seção: #a78bfa 18px bold com borda esquerda 3px solid #7c3aed\n- Item: título branco 15px bold como link, resumo #9ca3af 13px, fonte #6b7280 11px\n- Separador entre itens: border-bottom 1px solid #1f2937\n- Footer: fundo #111827, \"Mymir — Curadoria editorial de IA\" em #6b7280, link de cancelamento em #7c3aed\n- Responsivo com media queries"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        448,
+        2160
+      ],
+      "id": "76c08fc4-fed6-4f65-bc44-fa3aba6327ad",
+      "name": "Editorial Editor1"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1
+              ],
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -368,
+        2160
+      ],
+      "id": "e6768794-fb90-4ea9-87a6-1b964d69bf4c",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://qvunmbxdtezcnrmtjrky.supabase.co/rest/v1/newsletter_subscriptions?is_active=eq.true&select=user_id,include_news,include_trends,include_projects,users(email,name)",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "https://qvunmbxdtezcnrmtjrky.supabase.co"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2dW5tYnhkdGV6Y25ybXRqcmt5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MTYxODcsImV4cCI6MjA5MDI5MjE4N30.3LeGmlY0xUWSXzVeGKGR3VTz-k-NyQQwFry7qNvvdFQ"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        800,
+        2160
+      ],
+      "id": "bbd7e091-bf6f-4039-8717-9c1b3354aa3d",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1248,
+        2160
+      ],
+      "id": "d3fcdec9-f776-4e12-8f40-9859c37c0d23",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "jsCode": "const subscribers = $input.first().json;\nconst html = $('Editorial Editor1').item.json.output;\n\nreturn subscribers.map(sub => ({\n  email: sub.users?.email || sub.email,\n  name: sub.users?.name || 'Assinante',\n  html: html\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1024,
+        2160
+      ],
+      "id": "2efc4969-2275-4114-b0fa-580008513425",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.resend.com/emails",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer re_iitTsMGL_EB1vNihB5auivzLzYfuTCnM8"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"from\": \"Mymir <onboarding@resend.dev>\",\n  \"to\": [\"={{ $json.email }}\"],\n  \"subject\": \"Mymir Weekly — ={{ new Date().toLocaleDateString('pt-BR', {day:'2-digit', month:'long', year:'numeric'}) }}\",\n  \"html\": \"={{ $json.html }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1472,
+        2160
+      ],
+      "id": "0b04b3b5-4895-4107-9b75-cedd2f97b8f4",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {
+        "model": "meta-llama/llama-4-scout-17b-16e-instruct",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        512,
+        2384
+      ],
+      "id": "cf4c5c9c-b52a-4b33-b3e8-e4fa92a264af",
+      "name": "Groq Chat Model3",
+      "credentials": {
+        "groqApi": {
+          "id": "jymHyAi8mmreHFoE",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ec2f3ff2-2828-469b-b8c6-69dc3c9527f6",
+              "name": "session_id",
+              "value": "={{ $json.body.session_id || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "da2e6497-9262-46fa-baf2-10371f56e94a",
+              "name": "user_id",
+              "value": "={{ $json.body.user_id || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "d515934b-e4e5-4f65-a07e-85fc54866b05",
+              "name": "path",
+              "value": "={{ ($json.body.path || '').toLowerCase().trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "eaf55b54-9ce9-4605-8fb7-b1b3bc6f881a",
+              "name": "message",
+              "value": "={{ $json.body.message || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "2c1db250-0dc7-4591-ad75-a4cc95e1c451",
+              "name": "model_pref",
+              "value": "={{ $json.body.model_pref || 'auto' }}",
+              "type": "string"
+            },
+            {
+              "id": "a92b77ad-c4c8-4048-bd73-7d96f9f7fbee",
+              "name": "is_followup",
+              "value": "={{ (($json.body.path || '').toLowerCase().trim() === 'followup') }}",
+              "type": "string"
+            },
+            {
+              "id": "af45cc01-de51-4c1f-b502-49d26c9a678c",
+              "name": "cache_key_response",
+              "value": "={{ 'cache:response:' + ($json.body.user_id || '') + ':' + ($json.body.session_id || '') + ':' + (($json.body.path || '').toLowerCase().trim()) }}",
+              "type": "string"
+            },
+            {
+              "id": "d14cdba3-6727-470c-b490-c5ba5d4d8067",
+              "name": "cache_key_context",
+              "value": "={{ 'cache:context:' + ($json.body.user_id || '') + ':' + ($json.body.session_id || '') }}",
+              "type": "string"
+            },
+            {
+              "id": "2bbc4f74-a084-40fd-b22e-4e202db09eff",
+              "name": "request_timestamp",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -144,
+        1104
+      ],
+      "id": "ee9514ac-8898-4959-a1a5-3fa8f690d488",
+      "name": "Normalize Input"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "dda3b196-9abf-43c1-9804-aec1d87365ee",
+              "leftValue": "={{ $json.session_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "415b8d43-2cab-40ea-90ba-9ff0467f15e9",
+              "leftValue": "={{ $json.user_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "58b4c15a-ab59-475e-bf5d-9c3d47cdd756",
+              "leftValue": "={{ $json.message }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "5e7ac772-37c5-4de8-9233-e714da464263",
+              "leftValue": "={{ ['news', 'trends', 'projects', 'followup'].includes($json.path) }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        80,
+        1104
+      ],
+      "id": "5b0498f4-e4d5-4631-8071-0e78bd1f6605",
+      "name": "Validate Input"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a907b1bb-aec0-44f4-8daa-fb93b497650f",
+              "name": "success",
+              "value": false,
+              "type": "boolean"
+            },
+            {
+              "id": "dfaf9aea-e700-4035-8370-c22179b267ae",
+              "name": "error",
+              "value": "invalid_input",
+              "type": "string"
+            },
+            {
+              "id": "9d369a6e-df72-4141-88a9-36122b8041c9",
+              "name": "message",
+              "value": "Campos obrigatórios ausentes, vazios ou path inválido.",
+              "type": "string"
+            },
+            {
+              "id": "9dab80ce-0c47-452a-98af-e1347019ea03",
+              "name": "session_id",
+              "value": "={{ $json.session_id || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "d51d8c15-f7bd-448d-9873-db1a3a0b0738",
+              "name": "path",
+              "value": "={{ $json.path || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "4d6d7019-db98-41f5-a5ea-0afe2c27a91b",
+              "name": "timestamp",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        352,
+        1232
+      ],
+      "id": "70f714d6-5602-4800-bc10-7f55a22401c1",
+      "name": "Invalid Input Response"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "propertyName": "cached_response",
+        "key": "=cache:{{ $json.user_id }}:{{ $json.path }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        304,
+        976
+      ],
+      "id": "de7ba5de-b0d2-4697-9609-cba47e1e7bf0",
+      "name": "Redis Get Response Cache",
+      "credentials": {
+        "redis": {
+          "id": "QCnqTnVvhe5uYeSU",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "681c0dd6-0ee7-4f8a-83c7-60ff4b32597d",
+              "leftValue": "={{ $json.cached_response }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        528,
+        976
+      ],
+      "id": "23da42f5-c83c-4412-87db-6aa564f75b8b",
+      "name": "If Cache Hit"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "cc87fcc2-3297-4134-8d3e-661f36fe6ae1",
+              "name": "success",
+              "value": true,
+              "type": "boolean"
+            },
+            {
+              "id": "eb468a0b-bcce-4381-9628-286455617d21",
+              "name": "source",
+              "value": "cache",
+              "type": "string"
+            },
+            {
+              "id": "84376d24-c23e-49e9-954c-36d0be87ef81",
+              "name": "session_id",
+              "value": "={{ $('Validate Input').item.json.session_id }}",
+              "type": "string"
+            },
+            {
+              "id": "8872751c-af82-4c98-9396-596e816f984b",
+              "name": "path",
+              "value": "={{ $('Validate Input').item.json.path }}",
+              "type": "string"
+            },
+            {
+              "id": "fcb4a2c8-2063-41c7-a335-2d046ca6c787",
+              "name": "response",
+              "value": "={{ $('Redis Get Response Cache').item.json.cached_response }}",
+              "type": "string"
+            },
+            {
+              "id": "588f3d36-bb5e-4be1-9c8c-06aa59260d41",
+              "name": "timestamp",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1840,
+        704
+      ],
+      "id": "17c4263e-03bc-44ff-abd0-f28ec4869dc2",
+      "name": "Cached Response Payload"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "propertyName": "context",
+        "key": "={{ $json.session_id }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        896,
+        1008
+      ],
+      "id": "5b3c1754-e295-4c59-a3ed-542443ba523a",
+      "name": "Redis Get Context",
+      "credentials": {
+        "redis": {
+          "id": "QCnqTnVvhe5uYeSU",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "a8a827ce-f0b4-4644-aaa4-ab9299417d89",
+              "leftValue": "={{ $json.value }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1104,
+        1008
+      ],
+      "id": "8b2b6b98-f464-460d-b175-cc0dfa5f5ef4",
+      "name": "If Context Exists"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0bca610e-4c4c-4a90-9f7f-162f78becc49",
+              "name": "success",
+              "value": false,
+              "type": "boolean"
+            },
+            {
+              "id": "f20ed9be-bac0-4e19-9086-bd1de1510fc2",
+              "name": "source",
+              "value": "no_context",
+              "type": "string"
+            },
+            {
+              "id": "c944ec4a-04a5-450e-9fd3-8d186803334f",
+              "name": "error",
+              "value": "followup_without_context",
+              "type": "string"
+            },
+            {
+              "id": "56dcac73-3f50-4663-afb5-295c52810f21",
+              "name": "session_id",
+              "value": "={{ $json.session_id }}",
+              "type": "string"
+            },
+            {
+              "id": "8d6b1179-c895-43b3-b6ea-488f10161828",
+              "name": "path",
+              "value": "={{ $json.path }}",
+              "type": "string"
+            },
+            {
+              "id": "78709bb9-d2d5-4316-a026-a4b73dd5544d",
+              "name": "response",
+              "value": "Não encontrei contexto anterior suficiente nesta sessão para responder ao follow-up.",
+              "type": "string"
+            },
+            {
+              "id": "c503da0a-d6bc-487c-a1b7-a8d83e0524bc",
+              "name": "timestamp",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1312,
+        1088
+      ],
+      "id": "a55d1098-25f2-4bec-85e4-29a9e0152d69",
+      "name": "Followup Without Context Response"
+    },
+    {
+      "parameters": {
+        "jsCode": "const webhookBody = $('webhook - WEB').first().json.body;\nconst raw = $json.output || '{}';\n\nlet parsed;\n\ntry {\n  parsed = JSON.parse(raw);\n} catch (e) {\n  parsed = { results: [] };\n}\n\nconst results = Array.isArray(parsed.results) ? parsed.results : [];\n\nreturn [\n  {\n    json: {\n      session_id: webhookBody.session_id,\n      user_id: webhookBody.user_id,\n      path: webhookBody.path,\n      message: webhookBody.message,\n      model_pref: webhookBody.model_pref || 'auto',\n      is_followup: webhookBody.path === 'followup',\n      results_count: results.length,\n      results: results\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        992,
+        1328
+      ],
+      "id": "69f03a03-94c3-4eec-a5bc-6c3374d6fbc6",
+      "name": "Normalize Search Output"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "cd7a3533-c856-4faa-aded-85abae24afaf",
+              "leftValue": "={{ $json.results_count }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1264,
+        1328
+      ],
+      "id": "3aaf598a-d542-47b6-8c64-ce9a2622b51f",
+      "name": "If Search Results Exist"
+    },
+    {
+      "parameters": {
+        "jsCode": "const rawContext = $json.value;\n\nlet parsedContext = {};\n\ntry {\n  parsedContext = typeof rawContext === 'string' ? JSON.parse(rawContext) : rawContext;\n} catch (error) {\n  parsedContext = {\n    parse_error: true,\n    raw_context: rawContext\n  };\n}\n\nreturn [\n  {\n    json: {\n      session_id: $json.session_id,\n      user_id: $json.user_id,\n      path: $json.path,\n      message: $json.message,\n      model_pref: $json.model_pref,\n      is_followup: $json.is_followup,\n      cache_key_response: $json.cache_key_response,\n      cache_key_context: $json.cache_key_context,\n      request_timestamp: $json.request_timestamp,\n\n      followup_context_available: true,\n      followup_context: parsedContext,\n      last_path: parsedContext.last_path || '',\n      last_user_message: parsedContext.last_user_message || '',\n      last_editorial_response: parsedContext.last_editorial_response || '',\n      last_search_results: parsedContext.last_search_results || []\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1312,
+        896
+      ],
+      "id": "882eefb3-327b-4f92-8c08-72138c6b4a5c",
+      "name": "Prepare Followup Context"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b95bb359-7f2d-4e2d-8908-1bc83a941e5d",
+              "name": "=editor_mode",
+              "value": "={{ $json.is_followup ? 'followup' : 'search' }}",
+              "type": "string"
+            },
+            {
+              "id": "1c39f3fb-2302-4fc8-bc4b-b1e2eb38c4c9",
+              "name": "editor_path",
+              "value": "={{ $json.path }}",
+              "type": "string"
+            },
+            {
+              "id": "8296c82b-4aac-49cd-b34b-42302bece492",
+              "name": "editor_user_message",
+              "value": "={{ $json.message }}",
+              "type": "string"
+            },
+            {
+              "id": "685d3fca-9297-4823-a741-7fb7c8c8fe3f",
+              "name": "editor_results",
+              "value": "={{ $json.results || [] }}",
+              "type": "string"
+            },
+            {
+              "id": "99f02325-48ab-4f8e-8347-8024309ad61b",
+              "name": "editor_results_count",
+              "value": "={{ $json.results_count || 0 }}",
+              "type": "string"
+            },
+            {
+              "id": "4fa38e3c-f07f-4bbf-a61d-f6b9af7cf708",
+              "name": "editor_context",
+              "value": "={{ $json.followup_context || {} }}",
+              "type": "string"
+            },
+            {
+              "id": "e46da3a6-5133-4ecd-8e8f-83f790bab77d",
+              "name": "editor_last_response",
+              "value": "={{ $json.last_editorial_response || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "2f40acb2-734b-4cf3-938c-c17aa965b52c",
+              "name": "editor_last_results",
+              "value": "={{ $json.last_search_results || [] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1616,
+        960
+      ],
+      "id": "1077c2a7-cec8-4b03-b347-10965451da87",
+      "name": "Prepare Editorial Input"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d6a1a605-f58b-48af-83d3-02e3b3088418",
+              "name": "success",
+              "value": true,
+              "type": "boolean"
+            },
+            {
+              "id": "e8dbe09a-8242-4dea-b787-7519a8eeab09",
+              "name": "source",
+              "value": "no_results",
+              "type": "string"
+            },
+            {
+              "id": "f3210d75-9994-4a8d-a050-d8aa20a1a6e3",
+              "name": "session_id",
+              "value": "={{ $json.session_id }}",
+              "type": "string"
+            },
+            {
+              "id": "034489cf-7dc7-4583-ad9d-8924f6ea8188",
+              "name": "path",
+              "value": "={{ $json.path }}",
+              "type": "string"
+            },
+            {
+              "id": "79437dfe-325d-45da-a1c2-44c8ed0564ec",
+              "name": "response",
+              "value": "Não encontrei resultados relevantes e recentes para sua solicitação.",
+              "type": "string"
+            },
+            {
+              "id": "c3fac521-5d71-45d7-a06f-7649275294e4",
+              "name": "timestamp",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2288,
+        1344
+      ],
+      "id": "93b2ca4c-1382-45fa-b172-1498d0c25467",
+      "name": "No Search Results Response"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5180d471-4fd7-4481-8d7b-4a20aab87a35",
+              "name": "success",
+              "value": "={{ $json.success !== undefined ? $json.success : true }}",
+              "type": "string"
+            },
+            {
+              "id": "1f0dfae7-69c9-4303-a37e-e9651ce5399b",
+              "name": "source",
+              "value": "={{ $json.source || 'live' }}",
+              "type": "string"
+            },
+            {
+              "id": "c0559449-765f-485c-a709-60d3b504946e",
+              "name": "session_id",
+              "value": "={{ $json.session_id || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "8422808d-2571-4041-8bc9-32ff8d721f9e",
+              "name": "path",
+              "value": "={{ $json.path || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "1519de53-7628-488b-9ae5-664ddcf787ad",
+              "name": "response",
+              "value": "={{ $json.output || $json.response || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "ffddcfd3-8ad1-4c54-b845-00e89fbd0a58",
+              "name": "timestamp",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2592,
+        1120
+      ],
+      "id": "817dca62-7ef0-4ab2-a42d-81fb73f8d6b8",
+      "name": "Assemble Final Response"
+    },
+    {
+      "parameters": {
+        "operation": "set",
+        "key": "=cache:{{ $('Normalize Input').first().json.user_id }}:{{ $('Normalize Input').first().json.path }}",
+        "value": "={{ $('Assemble Final Response').first().json.response }}",
+        "expire": true,
+        "ttl": 3600
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        2816,
+        1120
+      ],
+      "id": "edecb5b8-c0e6-4472-b550-de381adf5ab5",
+      "name": "Redis Set Response Cache",
+      "credentials": {
+        "redis": {
+          "id": "QCnqTnVvhe5uYeSU",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "set",
+        "key": "={{ 'cache:context:' + $json.user_id + ':' + $json.session_id }}",
+        "value": "=={{ JSON.stringify({  last_path: $json.path,  last_user_message: $json.editor_user_message || '',  last_editorial_response: $json.response,  last_search_results: $json.editor_results || []}) }}",
+        "expire": true,
+        "ttl": 3600
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        3040,
+        1120
+      ],
+      "id": "732931d5-df97-4fe4-b3c0-ea7fbbbcd840",
+      "name": "Redis Set Context",
+      "credentials": {
+        "redis": {
+          "id": "QCnqTnVvhe5uYeSU",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        3424,
+        1120
+      ],
+      "id": "254b0604-fd81-40e6-b5f1-4abac2df116a",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "content": "Padroniza a entrada recebida pelo webhook.",
+        "height": 208,
+        "width": 198
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -192,
+        1040
+      ],
+      "typeVersion": 1,
+      "id": "0b63caed-deaa-44df-829a-d4a1583a79c2",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "Monta uma resposta padronizada quando a entrada é inválida.",
+        "height": 224,
+        "width": 192
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        304,
+        1168
+      ],
+      "typeVersion": 1,
+      "id": "df855a28-a21a-47ed-a66d-80f1592dfdcd",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "Transforma a resposta retornada do Redis em um payload padronizado para o restante do fluxo.",
+        "height": 272,
+        "width": 304
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1728,
+        624
+      ],
+      "typeVersion": 1,
+      "id": "11a0fb32-e98b-46ae-9d03-e2c1f0e285c4",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "content": "Busca um contexto salvo manualmente para responder follow-ups.",
+        "height": 320,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        880,
+        848
+      ],
+      "typeVersion": 1,
+      "id": "a98c4632-75a8-4a5f-822e-06164c5cdff0",
+      "name": "Sticky Note8"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3cca4f82-e3bc-4c8c-81d5-b33428a637bf",
+              "name": "success",
+              "value": "={{ $json.success ?? false }}",
+              "type": "string"
+            },
+            {
+              "id": "3db105ef-3d3b-4448-b4f7-37c93d6c831a",
+              "name": "source",
+              "value": "={{ $json.source ?? 'unknown' }}",
+              "type": "string"
+            },
+            {
+              "id": "5144879d-69f8-44ac-8ba6-09a47570dd53",
+              "name": "session_id",
+              "value": "={{ $json.session_id ?? '' }}",
+              "type": "string"
+            },
+            {
+              "id": "665da04e-0613-43e3-9230-68a763fe621f",
+              "name": "path",
+              "value": "={{ $json.path ?? '' }}",
+              "type": "string"
+            },
+            {
+              "id": "7f36cdd8-e7c8-4334-b61c-5ade63a7febb",
+              "name": "response",
+              "value": "={{ String($json.response ?? '') }}",
+              "type": "string"
+            },
+            {
+              "id": "eea93f5f-dc2a-4d98-a080-6d74a25e778f",
+              "name": "timestamp",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3248,
+        1120
+      ],
+      "id": "3d212728-e91d-4f70-b62a-aab6a92f1252",
+      "name": "Prepare Webhook Response"
+    },
+    {
+      "parameters": {
+        "model": "meta-llama/llama-4-scout-17b-16e-instruct",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        1808,
+        1232
+      ],
+      "id": "78795b34-b1dd-4020-9d3d-5b8e44ae9739",
+      "name": "Groq Chat Resume",
+      "credentials": {
+        "groqApi": {
+          "id": "jymHyAi8mmreHFoE",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        560,
+        1488
+      ],
+      "id": "b6304202-7acf-40f7-99ef-9f6f4c7ceb83",
+      "name": "Groq Chat Search",
+      "credentials": {
+        "groqApi": {
+          "id": "jymHyAi8mmreHFoE",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "err-log-001",
+              "name": "workflow_error",
+              "value": "={{ $json.execution?.error?.message || 'Erro desconhecido no workflow' }}",
+              "type": "string"
+            },
+            {
+              "id": "err-log-002",
+              "name": "execution_id",
+              "value": "={{ $execution.id }}",
+              "type": "string"
+            },
+            {
+              "id": "err-log-003",
+              "name": "failed_node",
+              "value": "={{ $json.execution?.lastNodeExecuted || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "err-log-004",
+              "name": "timestamp",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -128,
+        1632
+      ],
+      "id": "087dc435-6588-4ee9-b0ff-80dd54d1a723",
+      "name": "Log Error1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Search in Tavily": {
+      "ai_tool": [
+        [
+          {
+            "node": "Agent Search",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "mediastack_news": {
+      "ai_tool": [
+        [
+          {
+            "node": "Agent Search",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "gnews_search": {
+      "ai_tool": [
+        [
+          {
+            "node": "Agent Search",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Editorial Editor",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "if - follow up or not": {
+      "main": [
+        [
+          {
+            "node": "Redis Get Context",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Agent Search",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Log Error1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "webhook - WEB": {
+      "main": [
+        [
+          {
+            "node": "Normalize Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent Search": {
+      "main": [
+        [
+          {
+            "node": "Normalize Search Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Editorial Editor": {
+      "main": [
+        [
+          {
+            "node": "Assemble Final Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search in Tavily1": {
+      "ai_tool": [
+        [
+          {
+            "node": "Agent Search1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "mediastack_news1": {
+      "ai_tool": [
+        [
+          {
+            "node": "Agent Search1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "gnews_search1": {
+      "ai_tool": [
+        [
+          {
+            "node": "Agent Search1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agent Search1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent Search1": {
+      "main": [
+        [
+          {
+            "node": "Editorial Editor1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Agent Search1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Editorial Editor1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Editorial Editor1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Input": {
+      "main": [
+        [
+          {
+            "node": "Validate Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Input": {
+      "main": [
+        [
+          {
+            "node": "Redis Get Response Cache",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Invalid Input Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis Get Response Cache": {
+      "main": [
+        [
+          {
+            "node": "If Cache Hit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Cache Hit": {
+      "main": [
+        [
+          {
+            "node": "Cached Response Payload",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "if - follow up or not",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis Get Context": {
+      "main": [
+        [
+          {
+            "node": "If Context Exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Context Exists": {
+      "main": [
+        [
+          {
+            "node": "Prepare Followup Context",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Followup Without Context Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Search Output": {
+      "main": [
+        [
+          {
+            "node": "If Search Results Exist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Search Results Exist": {
+      "main": [
+        [
+          {
+            "node": "Prepare Editorial Input",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Search Results Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Followup Context": {
+      "main": [
+        [
+          {
+            "node": "Prepare Editorial Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Editorial Input": {
+      "main": [
+        [
+          {
+            "node": "Editorial Editor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cached Response Payload": {
+      "main": [
+        [
+          {
+            "node": "Assemble Final Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Search Results Response": {
+      "main": [
+        [
+          {
+            "node": "Assemble Final Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Followup Without Context Response": {
+      "main": [
+        [
+          {
+            "node": "Assemble Final Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Assemble Final Response": {
+      "main": [
+        [
+          {
+            "node": "Redis Set Response Cache",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis Set Response Cache": {
+      "main": [
+        [
+          {
+            "node": "Redis Set Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis Set Context": {
+      "main": [
+        [
+          {
+            "node": "Prepare Webhook Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Invalid Input Response": {
+      "main": [
+        [
+          {
+            "node": "Prepare Webhook Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Webhook Response": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Resume": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Editorial Editor",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Search": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agent Search",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "5ca2345a-ad31-417e-ba4b-23b173992feb",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "36f3cdb8ee9d98f5f23d3d7658c02d85731dbf2c4e7e137dd2e8b5e5f6ce8d44"
+  },
+  "id": "t5lnoGtM24cDHOBP",
+  "tags": []
+}
