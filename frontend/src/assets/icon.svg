@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="256" height="256" viewBox="0 0 256 256" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Mimir Magnetic Orb Iconic Logo</title>
+    <defs>
+        <linearGradient x1="0%" y1="50%" x2="100%" y2="50%" id="mimir_orbit_gradient">
+            <stop stop-color="#1A0A2E" offset="0%"></stop> <stop stop-color="#DA18A3" offset="50%"></stop> <stop stop-color="#1A0A2E" offset="100%"></stop> </linearGradient>
+        
+        <radialGradient cx="50%" cy="50%" fx="50%" fy="50%" r="50%" id="mimir_core_gradient">
+            <stop stop-color="#FFFFFF" offset="0%"></stop>
+            <stop stop-color="#DA18A3" stop-opacity="0.8" offset="70%"></stop>
+            <stop stop-color="#DA18A3" stop-opacity="0" offset="100%"></stop>
+        </radialGradient>
+    </defs>
+    
+    <g id="mimir-magnetic-orb" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <circle fill="#0D0D12" cx="128" cy="128" r="100" id="base_sphere"></circle>
+        
+        <ellipse stroke="url(#mimir_orbit_gradient)" stroke-width="6" cx="128" cy="128" rx="30" ry="90" id="orbit_v" opacity="0.9" transform="translate(128, 128) rotate(0) translate(-128, -128)"></ellipse>
+        
+        <ellipse stroke="url(#mimir_orbit_gradient)" stroke-width="6" cx="128" cy="128" rx="30" ry="90" id="orbit_d1" opacity="0.9" transform="translate(128, 128) rotate(60) translate(-128, -128)"></ellipse>
+        
+        <ellipse stroke="url(#mimir_orbit_gradient)" stroke-width="6" cx="128" cy="128" rx="30" ry="90" id="orbit_d2" opacity="0.9" transform="translate(128, 128) rotate(-60) translate(-128, -128)"></ellipse>
+        
+        <circle fill="url(#mimir_core_gradient)" cx="128" cy="128" r="50" id="core_light" opacity="0.95"></circle>
+    </g>
+</svg>
