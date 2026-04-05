@@ -1,7 +1,5 @@
 @import "tailwindcss";
 
-
-
 body {
   background-color: #030712;
   color: #e5e7eb;
@@ -13,12 +11,188 @@ body {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #374151; border-radius: 2px; }
 
-/* Markdown dentro do chat */
-.prose-chat p { margin-bottom: 8px; }
-.prose-chat p:last-child { margin-bottom: 0; }
-.prose-chat ul { list-style: disc; padding-left: 20px; margin-bottom: 8px; }
-.prose-chat li { margin-bottom: 4px; color: #d1d5db; }
-.prose-chat strong { color: #f9fafb; font-weight: 500; }
-.prose-chat h3 { color: #f9fafb; font-weight: 500; font-size: 14px; margin: 12px 0 6px; }
-.prose-chat a { color: #a78bfa; text-decoration: underline; text-underline-offset: 2px; }
-.prose-chat a:hover { color: #c4b5fd; }
+
+.chat-markdown {
+  font-size: 14.5px;
+  line-height: 1.75;
+  color: #d1d5db;
+}
+
+/* Parágrafos */
+.chat-markdown p {
+  margin-bottom: 10px;
+}
+.chat-markdown p:last-child {
+  margin-bottom: 0;
+}
+
+/* Títulos */
+.chat-markdown h1,
+.chat-markdown h2,
+.chat-markdown h3,
+.chat-markdown h4 {
+  color: #f3f4f6;
+  font-weight: 600;
+  margin-top: 20px;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+.chat-markdown h1 { font-size: 18px; }
+.chat-markdown h2 { font-size: 16px; }
+.chat-markdown h3 { font-size: 15px; }
+.chat-markdown h4 { font-size: 14px; color: #9ca3af; }
+
+/* Listas */
+.chat-markdown ul {
+  list-style: disc;
+  padding-left: 20px;
+  margin-bottom: 10px;
+}
+.chat-markdown ol {
+  list-style: decimal;
+  padding-left: 20px;
+  margin-bottom: 10px;
+}
+.chat-markdown li {
+  margin-bottom: 4px;
+  color: #d1d5db;
+}
+
+/* Negrito e itálico */
+.chat-markdown strong { color: #f9fafb; font-weight: 600; }
+.chat-markdown em { color: #c4b5fd; font-style: italic; }
+
+/* Links */
+.chat-markdown a {
+  color: #a78bfa;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  word-break: break-all;
+}
+.chat-markdown a:hover { color: #c4b5fd; }
+
+/* Código inline */
+.chat-markdown code {
+  background: #1e1e2e;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 13px;
+  color: #c4b5fd;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/* Bloco de código */
+.chat-markdown pre {
+  background: #0f0f17;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 14px 16px;
+  overflow-x: auto;
+  margin: 12px 0;
+}
+.chat-markdown pre code {
+  background: transparent;
+  border: none;
+  padding: 0;
+  font-size: 13px;
+  color: #e2e8f0;
+}
+
+/* Separador */
+.chat-markdown hr {
+  border: none;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  margin: 16px 0;
+}
+
+/* Blockquote */
+.chat-markdown blockquote {
+  border-left: 3px solid #7c3aed;
+  padding-left: 14px;
+  color: #9ca3af;
+  margin: 12px 0;
+  font-style: italic;
+}
+
+/* =====================
+   TABELAS (GFM)
+   ===================== */
+
+/* Tabelas — sem scroll horizontal */
+.chat-markdown table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 14px 0;
+  table-layout: fixed;
+  display: table;
+}
+
+.chat-markdown thead tr {
+  background: rgba(124,58,237,0.15);
+  border-bottom: 1px solid rgba(124,58,237,0.3);
+}
+
+.chat-markdown th {
+  padding: 8px 14px;
+  text-align: left;
+  font-weight: 600;
+  color: #e2e8f0;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.chat-markdown td {
+  padding: 8px 14px;
+  color: #cbd5e1;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  vertical-align: top;
+  white-space: normal;
+  min-width: 120px;
+  max-width: 280px;
+}
+
+/* Células — wrappam normalmente */
+.chat-markdown td {
+  padding: 8px 12px;
+  color: #cbd5e1;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  vertical-align: top;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Larguras por coluna — somam 100% */
+.chat-markdown td:nth-child(1),
+.chat-markdown th:nth-child(1) { width: 11%; }
+
+.chat-markdown td:nth-child(2),
+.chat-markdown th:nth-child(2) { width: 22%; }
+
+.chat-markdown td:nth-child(3),
+.chat-markdown th:nth-child(3) { width: 13%; }
+
+/* Breve Descrição — a mais larga */
+.chat-markdown td:nth-child(4),
+.chat-markdown th:nth-child(4) { width: 38%; }
+
+/* Link — compacto, quebra a URL */
+.chat-markdown td:last-child,
+.chat-markdown th:last-child {
+  width: 16%;
+  word-break: break-all;
+  font-size: 12px;
+}
+
+.chat-markdown tbody tr:hover {
+  background: rgba(255,255,255,0.03);
+}
+
+.chat-markdown tbody tr:last-child td {
+  border-bottom: none;
+}

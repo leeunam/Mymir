@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { motion } from 'framer-motion';
 import type { ChatMessage } from '../../types';
 import { TypingIndicator } from './TypingIndicator';
@@ -72,8 +73,8 @@ export function MessageBubble({ message }: { message: ChatMessage }) {
             ) : isUser ? (
               <p className="whitespace-pre-wrap">{message.content}</p>
             ) : (
-              <div className="prose prose-invert prose-p:leading-relaxed prose-pre:bg-[#111] prose-pre:border prose-pre:border-white/10 prose-headings:text-gray-100 prose-a:text-violet-400 prose-strong:text-gray-200 max-w-none text-[15px]">
-                <ReactMarkdown>{message.content}</ReactMarkdown>
+              <div className="chat-markdown">
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown>
               </div>
             )}
 
